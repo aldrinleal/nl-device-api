@@ -1,0 +1,14 @@
+{
+  "name": "nl-da",
+  "description": "",
+  "version": "0.1.0",
+  "dependencies": {
+    "serverless": "^3.28.1",
+    "serverless-offline": "^12.0.4",
+    "serverless-python-requirements": "^6.0.0"
+  },
+  "scripts": {
+    "dev": "pipenv run sls offline",
+    "test": "pipenv run pytest"
+  }
+}

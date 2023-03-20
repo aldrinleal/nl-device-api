@@ -16,7 +16,7 @@ useDotenv: true
 provider:
   name: aws
   runtime: python3.8
-  region: eu-west-2
+  region: eu-west-1
   deploymentBucket:
     # Prevent future unintentional S3 Bucket leaks
     blockPublicAccess: true
@@ -30,7 +30,7 @@ provider:
   environment:
     # ${env:*} variables are injected from the build-time environment.
     PROJECT_NAME: ${env:PROJECT_NAME}
-    ROOT_PATH: "/${opt:stage, 'dev'}"
+    #ROOT_PATH: "/${opt:stage, 'dev'}"
 
 package:
   exclude:
@@ -58,12 +58,12 @@ functions:
   app:
     handler: app.asgi.handler
     events:
-      - http: ANY /
-      - http: "ANY /{proxy+}"
-#      - httpApi:
-#          method: '*'
-#          # See https://github.com/dherault/serverless-offline/issues/1118
-#          path: ${env:CATCHALL_ROUTE, '*'}
+#      - http: ANY /
+#      - http: "ANY /{proxy+}"
+      - httpApi:
+          method: '*'
+          # See https://github.com/dherault/serverless-offline/issues/1118
+          path: ${env:CATCHALL_ROUTE, '*'}
 
 plugins:
   - serverless-offline

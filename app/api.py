@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from app.config import settings
 from app.models import HealthCheck, GetMetricDataRequest, GetMetricDataResponse, MetricDataResult
 
-app = FastAPI(title=settings.PROJECT_NAME, debug=settings.DEBUG, root_path=settings.ROOT_PATH)
+app = FastAPI(title=settings.PROJECT_NAME, debug=settings.DEBUG)
 
 from datetime import timedelta, datetime
 from typing import Iterable

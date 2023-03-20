@@ -30,6 +30,7 @@ provider:
   environment:
     # ${env:*} variables are injected from the build-time environment.
     PROJECT_NAME: ${env:PROJECT_NAME}
+    ROOT_PATH: "/${opt:stage, 'dev'}"
 
 package:
   exclude:

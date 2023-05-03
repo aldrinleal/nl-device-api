@@ -9,6 +9,8 @@ fastapi = "*"
 mangum = "*"
 boto3 = "*"
 httpx = "*"
+dyntastic = "*"
+pydantic = "*"
 
 [dev-packages]
 pytest = "*"
@@ -19,7 +21,7 @@ pytest-isort = "*"
 pytest-mypy = "*"
 pytest-randomly = "*"
 
-boto3-stubs = { extras = ['dynamodb'] }
+boto3-stubs = { extras = ['dynamodb','iot-data'] }
 
 uvicorn = "*"
 requests = "*"

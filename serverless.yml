@@ -21,6 +21,7 @@ provider:
     # Prevent future unintentional S3 Bucket leaks
     blockPublicAccess: true
   lambdaHashingVersion: 20201221
+  stage: ${opt:stage,'dev'}
   logs:
     httpApi: true
   # Prevent costs from ever-increasing
@@ -30,7 +31,23 @@ provider:
   environment:
     # ${env:*} variables are injected from the build-time environment.
     PROJECT_NAME: ${env:PROJECT_NAME}
+    STAGE: ${self:provider.stage,'dev'}
     #ROOT_PATH: "/${opt:stage, 'dev'}"
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - "dynamodb:PutItem"
+            - "dynamodb:GetItem"
+            - "dynamodb:Query"
+            - "dynamodb:Scan"
+            - "cloudwatch:*"
+            - "logs:*"
+            - "iot-data:*"
+            - "iot:*"
+          Resource: '*'
 
 package:
   exclude:
@@ -58,22 +75,55 @@ functions:
   app:
     handler: app.asgi.handler
     events:
-#      - http: ANY /
-#      - http: "ANY /{proxy+}"
+      #      - http: ANY /
+      #      - http: "ANY /{proxy+}"
       - httpApi:
           method: '*'
           # See https://github.com/dherault/serverless-offline/issues/1118
           path: ${env:CATCHALL_ROUTE, '*'}
+  iotListener:
+    handler: app.decoder.handler
+    events:
+      - iot:
+          sql: "SELECT clientid() as client_id,  traceid() as trace_id, encode(*, 'base64') as encoded_payload FROM 'u'"
+          description: "Listen to all events from u"
+          sqlVersion: "2016-03-23"
+
+resources:
+  Resources:
+    DeviceStatusTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: "device-status-${self:provider.stage}"
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+        - AttributeName: device_id
+          AttributeType: S
+        - AttributeName: period
+          AttributeType: S
+        KeySchema:
+        - AttributeName: device_id
+          KeyType: HASH
+        - AttributeName: period
+          KeyType: RANGE
+    PermissionToCallLambda:
+      Type: "AWS::Lambda::Permission"
+      DependsOn: "IotListenerLambdaFunction"
+      Properties:
+        Action: "lambda:InvokeFunction"
+        FunctionName: "nl-da-${self:provider.stage}-iotListener"
+        Principal: "iot.amazonaws.com"
 
 plugins:
   - serverless-offline
   - serverless-python-requirements
+
 custom:
   pythonRequirements:
-    # Use Docker to compile any C extensions for AWS Lambda platform.
-    # `pydantic` will Cython-compile for a speed boost at the expense of larger
-    # deployment package: ~12 MB vs ~600 KB
-    # dockerizePip: non-linux
+  # Use Docker to compile any C extensions for AWS Lambda platform.
+  # `pydantic` will Cython-compile for a speed boost at the expense of larger
+  # deployment package: ~12 MB vs ~600 KB
+  # dockerizePip: non-linux
   serverless-offline:
     # Remove the API Gateway REST API `/dev` stage prefix.
     # https://github.com/dherault/serverless-offline/issues/1118

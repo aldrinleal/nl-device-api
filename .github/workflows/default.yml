@@ -21,7 +21,9 @@ jobs:
         aws-region: eu-west-1
     - uses: actions/setup-python@v4
       with:
-        python-version: '3.9'
+        python-version: '3.10'
+    - name: Install pipenv
+      run: pip install --upgrade pipenv
     - name: Build
       run: yarn install && pipenv install
     - name: Deploy

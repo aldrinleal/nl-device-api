@@ -27,4 +27,4 @@ jobs:
     - name: Build
       run: yarn install && pipenv install
     - name: Deploy
-      run: pipenv run sls deploy
+      run: yarn sls deploy # pipenv run sls deploy

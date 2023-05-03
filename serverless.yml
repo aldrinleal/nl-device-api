@@ -30,7 +30,7 @@ provider:
   # https://www.serverless.com/framework/docs/providers/aws/guide/variables
   environment:
     # ${env:*} variables are injected from the build-time environment.
-    PROJECT_NAME: ${env:PROJECT_NAME}
+    #PROJECT_NAME: ${env:PROJECT_NAME}
     STAGE: ${self:provider.stage,'dev'}
     #ROOT_PATH: "/${opt:stage, 'dev'}"
 

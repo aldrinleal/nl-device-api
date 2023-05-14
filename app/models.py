@@ -40,6 +40,7 @@ class DeviceStatus(Dyntastic):
     __hash_key__ = "device_id"
     __range_key__ = "period"
 
+    version: str = "20230514070000"
     device_id: str
     period: datetime
 

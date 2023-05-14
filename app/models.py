@@ -48,3 +48,5 @@ class DeviceStatus(Dyntastic):
     powerOn: bool
 
     powerSelected: PowerSource
+
+    pfcStatus: int

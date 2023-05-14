@@ -4,11 +4,22 @@ import math
 import time
 
 from fastapi import FastAPI
+# See https://fastapi.tiangolo.com/tutorial/cors/
+# you can thank me later for this comment
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.models import HealthCheck, GetMetricDataRequest, GetMetricDataResponse, MetricDataResult
 
 app = FastAPI(title=settings.PROJECT_NAME, debug=settings.DEBUG)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 from datetime import timedelta, datetime
 from typing import Iterable
@@ -42,9 +53,12 @@ def get_value(d: datetime) -> float:
 
 @app.post("/metric_data")
 def get_metric_data(req: GetMetricDataRequest) -> GetMetricDataResponse:
+    # TODO: GetMetricDataRequest might allow other entities/fields to be read
+    # TODO: Currently the API doesn't read from DynamoDB yet.
+    #  Needs to be addressed once the Decoder is fully complete
     metricDataResult = MetricDataResult(
         Id="Consumption",
-        Label="Consuption over Time",
+        Label="Consumption over Time",
         Timestamps=[],
         Values=[]
     )

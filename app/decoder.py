@@ -44,8 +44,8 @@ I2C address   -> 1byte [0]	// this should be a read instruction.
     powerOn = (0 != int.from_bytes(payload_bytes_stream.read(1), byteorder="little"))
     powerSelected = PowerSource(
         int.from_bytes(payload_bytes_stream.read(1), byteorder="little"))
+    pfcStatus = int.from_bytes(payload_bytes_stream.read(1), byteorder="little")
 
-    # result["pfcStatus"] =  int.from_bytes(payload_bytes_stream.read(1), byteorder="little")
     # result["fuseStatus"] =  int.from_bytes(payload_bytes_stream.read(1), byteorder="little")
     # result["batteryPolarity"] =  int.from_bytes(payload_bytes_stream.read(1), byteorder="little")
     # result["tempStatus"] =  int.from_bytes(payload_bytes_stream.read(1), byteorder="little")
@@ -66,7 +66,8 @@ I2C address   -> 1byte [0]	// this should be a read instruction.
         period=datetime.now(),
         raw=payload_string,
         powerOn=powerOn,
-        powerSelected=powerSelected
+        powerSelected=powerSelected,
+        pfcStatus = pfcStatus,
     )
 
 
@@ -96,4 +97,4 @@ def handler(event: Dict[str, any], _context: any):
 
 if __name__ == '__main__':
     init_environment()
-    decode_payload("PgGZQxp2BAEDAAAAAMQJxAn4lQMAUMMAAJgAAAAAADA=")
+    decode_payload("000000", "PgGZQxp2BAEDAAAAAMQJxAn4lQMAUMMAAJgAAAAAADA=")

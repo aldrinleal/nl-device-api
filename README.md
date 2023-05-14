@@ -3,6 +3,10 @@
   * `yarn install && pipenv install`
   * `pipenv run sls offline`
 
+Locally:
+
+  * `pipenv install --dev && pipenv run python main.py`
+
 ## Format
 
 
